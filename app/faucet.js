@@ -8,7 +8,7 @@ if (window.ethereum) {
         });
     } catch (error) {
         // User denied account access...
-        console.log("Cannot enable");
+        log("Cannot enable");
     }
 }
 // Legacy dapp browsers...
@@ -17,7 +17,7 @@ else if (window.web3) {
 }
 // Non-dapp browsers...
 else {
-    console.log('Non-Ethereum browser detected. You should consider trying MetaMask!');
+    log('Non-Ethereum browser detected. You should consider trying MetaMask!');
 }
 
 // Your deployed address changes every time you deploy.
@@ -30,19 +30,20 @@ function goOn() {
         if (err) {
             console.error(err);
         } else {
-            console.log("Coinbase: " + coinbase);
+            log(coinbase, "address");
         }
     });
 
     faucetContractFactory = web3.eth.contract(JSON.parse(faucetCompiled.contracts["Faucet.sol:Faucet"].abi));
     faucetInstance = faucetContractFactory.at(faucetAddress);
+    log(faucetAddress, "faucetAddress");
 
     // Query eth for balance
     web3.eth.getBalance(faucetAddress, function(err, balance) {
         if (err) {
             console.error(err);
         } else {
-            console.log("Contract balance: " + balance);
+            log(balance/1e18, "balance");
         }
     });
 
@@ -51,7 +52,7 @@ function goOn() {
         if (err) {
             console.error(err);
         } else {
-            console.log("Faucet balance: " + balance);
+            log(balance/1e18, "balance");
         }
     });
 }
@@ -69,7 +70,7 @@ function topUp() {
                 if (err) {
                     console.error(err);
                 } else {
-                    console.log("topUp txn: " + txn);
+                    log("Send txn: " + txn);
                 }
             });
         }
@@ -93,11 +94,20 @@ function sendWei() {
                             if (err) {
                                 console.error(err);
                             } else {
-                                console.log("sendWei txn: " + txn);
+                                log("Withdraw txn: " + txn);
                             }
                         });
                 }
             });
         }
     });
+}
+
+function log(l, id) {
+    var text = l;
+    if (id === undefined) {
+        id = "log";
+        text = document.getElementById(id).innerHTML + "<br/>" + l;
+    }
+    document.getElementById(id).innerHTML = text;
 }
